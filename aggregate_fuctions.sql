@@ -146,7 +146,153 @@ SELECT title, ROUND((duration / 60.0), 2) AS duration_hours
 FROM films;
 
 -- Sorting results
-
 -- Put the data on specific order
+-- We do not have to include the field in the SELECT state
+
+-- ORDER BY
+
+SELECT title, budget
+FROM films
+ORDER BY budget;
+
+SELECT title, budget
+FROM films
+ORDER BY title; 
+
+-- Sorting in ASCENDING order
+
+SELECT title, budget
+FROM films
+ORDER BY budget ASC;
+
+-- Sorting in DESCENDING order
+
+SELECT title, budget
+FROM films
+ORDER BY budget DESC;
+
+SELECT title, budget
+FROM films
+WHERE budget IS NOT NULL
+ORDER BY budget DESC;
+
+-- ORDER BY multiple fields
+-- Separate field names with a comma
+-- Field_two is a tie-breaker
+
+SELECT title, wins
+FROM best_movies
+ORDER BY wins DESC;
+
+SELECT title, wins
+FROM best_movies
+ORDER BY wins DESC, imdb_score DESC;
+
+-- Different orders
+
+SELECT birthdate, name
+FROM people
+ORDER BY birthdate, name DESC;
+
+-- ORDER of execution
+-- Written code: SELECT, FROM, WHERE, ORDER BY
+-- Execution: FROM, WHERE, SELECT, ORDER BY, LIMIT
+
+-- Sorting single fields
+
+-- Select name from people and sort alphabetically
+SELECT name
+FROM people
+ORDER BY name;
+
+-- Select the title and duration from longest to shortest film
+SELECT title, duration
+FROM films
+ORDER BY duration DESC;
+
+-- Select the release year, duration, and title sorted by release year and duration
+SELECT release_year, duration, title
+FROM films
+ORDER BY release_year, duration;
+
+-- Select the certification, release year, and title sorted by certification and release year
+SELECT certification, release_year, title
+FROM films
+ORDER BY certification, release_year;
+
+-- Grouping Data
+
+-- GROUP BY single fields
+
+SELECT certification, COUNT(title) AS title_count
+FROM films
+GROUP BY certification;
+
+-- GROUP BY multiple fields
+-- The order in which we write the fields affects how the data is grouped
+
+SELECT certification, language, COUNT(title), AS title_count
+FROM films
+GROUP BY certification, language;
+
+-- GROUP BY with ORDER BY
+
+SELECT certification, COUNT(title) AS title_count
+FROM films
+GROUP BY certification
+ORDER BY title_count DESC;
+
+-- ORDER
+-- Written code: SELECT, FROM, GROUP BY, ORDER BY
+-- Execution: FROM, SELECT, GROUP BY, ORDER BY, LIMIT
+
+-- GROUP BY single fields
+
+-- Find the release_year and film_count of each year
+SELECT release_year, COUNT(id) AS film_count
+FROM films
+GROUP BY release_year;
+
+-- Find the release_year and average duration of films for each year
+SELECT release_year, AVG(duration) AS avg_duration
+FROM films
+GROUP BY release_year;
+
+-- GROUP BY multiple fields
+
+-- Find the release_year, country, and max_budget, then group and order by release_year and country
+SELECT release_year, country, MAX(budget) AS max_budget
+FROM films
+GROUP BY release_year, country
+ORDER BY release_year, country;
+
+-- Which year had the most language diversity?
+
+SELECT release_year, COUNT(DISTINCT language) AS language_qty
+FROM films
+GROUP BY release_year
+ORDER BY language_qty DESC;
+
+-- Filtering grouped data
+
+-- HAVING clause
+-- Filter based on the results of an aggregate function
+
+SELECT release_year, COUNT(title) AS title_count
+FROM films
+GROUP BY release_year
+HAVING COUNT(title) > 10;
+
+-- ORDER OF EXECUTION
+-- Written order: SELECT, FROM, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT
+-- Execution order: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT
+
+-- HAVING vs WHERE
+-- WHERE filters individual records
+-- HAVING filters grouped records
+
+
+
+
 
 
