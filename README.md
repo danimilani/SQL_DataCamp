@@ -1,12 +1,12 @@
 # SQL_DataCamp
 Repository with exercises from SQL Fundamentals Track - DataCamp
 
-## Course Introduction to SQL
+## Introduction to SQL
 
 1. Relational Databases
 2. Querying
 
-## Course Intermediate SQL
+## Intermediate SQL
 
 1. Selecting Data
 2. Filtering Records
