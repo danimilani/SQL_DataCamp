@@ -98,6 +98,76 @@ ORDER BY language;
 -- Last of 3 types of OUTER join
 -- Combines a LEFT and RIGHT join, returns all ids
 
+-- Syntax
+SELECT left_table.id AS l_id,
+	right_table.id AS r_id,
+	left_table.val AS l_val,
+	right_table.vak AS r_val
+FROM left_table
+FULL JOIN right_table
+USING (id);
+
+-- Example using leaders database
+SELECT p1.country AS country, prime_minister, president
+FROM prime_ministers AS p1
+FULL JOIN presidents AS p2
+ON p1.country = p2.country
+LIMIT 10;
+
+-- EXERCISES
+
+-- Comparing joins
+
+-- FULL JOIN
+SELECT name AS country, code, region, basic_unit
+FROM countries
+-- Join to currencies
+FULL JOIN currencies 
+USING (code)
+-- Where region is North America or name is null
+WHERE region = 'North America' OR name IS NULL
+ORDER BY region;
+
+-- LEFT JOIN
+SELECT name AS country, code, region, basic_unit
+FROM countries
+-- Join to currencies
+LEFT JOIN currencies 
+USING (code)
+WHERE region = 'North America' 
+	OR name IS NULL
+ORDER BY region;
+
+-- INNER JOIN
+SELECT name AS country, code, region, basic_unit
+FROM countries
+-- Join to currencies
+INNER JOIN currencies 
+USING (code)
+WHERE region = 'North America' 
+	OR name IS NULL
+ORDER BY region;
+
+
+-- Chaining FULL JOINs
+SELECT 
+	c1.name AS country, 
+    region, 
+    l.name AS language,
+	basic_unit, 
+    frac_unit
+FROM countries as c1 
+-- Full join with languages (alias as l)
+FULL JOIN languages AS l 
+USING (code) 
+-- Full join with currencies (alias as c2)
+FULL JOIN currencies AS c2 
+USING(code)
+WHERE region LIKE 'M%esia';
+
+-- CROSS JOIN
+-- Creates all possible combinations of two tables
+
 
 
 
