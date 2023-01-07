@@ -166,7 +166,104 @@ USING(code)
 WHERE region LIKE 'M%esia';
 
 -- CROSS JOIN
--- Creates all possible combinations of two tables
+-- Creates all possible combinations of two tables (ids of table 1 with ids of table 2)
+
+-- Syntax
+SELECT id1, id2
+FROM table1
+CROSS JOIN table2;
+
+-- Pairing prime ministers with presidents
+SELECT prime_minister, president
+FROM prime_ministers AS p1
+CROSS JOIN presidents AS p2
+WHERE p1.continent IN ('Asia')
+	AND p2.continent IN ('South America');
+
+-- EXERCISES
+
+-- Histories and languages
+
+SELECT c.name AS country, l.name AS language
+-- Inner join countries as c with languages as l on code
+FROM countries AS c
+INNER JOIN languages AS l
+USING (code)
+WHERE c.code IN ('PAK','IND')
+	AND l.code in ('PAK','IND');
+	
+SELECT c.name AS country, l.name AS language
+FROM countries AS c        
+-- Perform a cross join to languages (alias as l)
+CROSS JOIN languages AS l
+WHERE c.code in ('PAK','IND')
+	AND l.code in ('PAK','IND');
+	
+-- Choosing your join
+
+SELECT 
+	c.name AS country,
+    region,
+    life_expectancy AS life_exp
+FROM countries AS c
+-- Join to populations (alias as p) using an appropriate join
+LEFT JOIN populations as p 
+ON c.code = p.country_code
+-- Filter for only results in the year 2010
+WHERE p.year = 2010
+-- Sort by life_exp
+ORDER BY life_exp
+-- Limit to five records
+LIMIT 5;
+
+
+-- SELF JOINS
+-- Table is joined with itself to compare values from part of table with other values
+-- within the same table
+-- Dont have dedicated syntax
+-- Aliasing is required for a self-join
+
+SELECT
+	p1.country AS country1,
+	p2.country AS country2,
+	p1.continent
+FROM prime_ministers AS p1
+INNER JOIN prime_ministers AS p2
+ON p1.continent = p2.continent
+-- exclude records where the two country fields are the same
+	AND p1.country <> p2.country;
+
+-- EXERCISES
+
+-- Comparing a country to itself
+-- Select aliased fields from populations as p1
+SELECT 
+	p1.country_code, 
+    p1.size AS size2010, 
+    p2.size AS size2015
+-- Join populations as p1 to itself, alias as p2, on country code
+FROM populations AS p1
+INNER JOIN populations AS p2
+USING(country_code);
+
+SELECT 
+	p1.country_code, 
+    p1.size AS size2010, 
+    p2.size AS size2015
+FROM populations AS p1
+INNER JOIN populations AS p2
+ON p1.country_code = p2.country_code
+WHERE p1.year = 2010
+-- Filter such that p1.year is always five years before p2.year
+    AND p1.year = (p2.year - 5);
+    
+
+
+
+
+
+
+
 
 
 
