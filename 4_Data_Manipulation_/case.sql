@@ -191,7 +191,7 @@ WHERE
 		END IS NOT NULL;
 
 -- CASE WHEN with aggregate functions
--- CASE statements are great for caegorizing, filtering and aggregating data
+-- CASE statements are great for categorizing, filtering and aggregating data
 
 -- COUNT
 -- How many home and away goals did Liverpool score in each season?
@@ -204,7 +204,6 @@ SELECT
 FROM match
 GROUP BY season;
 
-
 SELECT
 season,
   COUNT(CASE WHEN hometeam_id = 8650 AND home_goal > away_goal
@@ -213,3 +212,134 @@ season,
         THEN id END) AS away_wins
 FROM match
 GROUP BY season;
+
+-- SUM
+-- Number of home and away goals that Liverpool scored in each season
+
+SELECT
+season,
+  SUM(CASE WHEN hometeam_id = 8650 THEN home_goal END) AS home_goals,
+  SUM(CASE WHEN awayteam_id = 8650 THEN away_goal END) AS away_goals
+FROM match
+GROUP BY season;
+
+-- AVG
+
+-- Calculate AVG of data
+SELECT
+season,
+  AVG(CASE WHEN hometeam_id = 8650 THEN home_goal END) AS avg_home_goals,
+  AVG(CASE WHEN awayteam_id = 8650 THEN away_goal END) AS avg_away_goals
+FROM match
+GROUP BY season;
+
+-- ROUND with AVG
+SELECT
+season,
+  ROUND(AVG(CASE WHEN hometeam_id = 8650 THEN home_goal END),2) AS avg_home_goals,
+  ROUND(AVG(CASE WHEN awayteam_id = 8650 THEN away_goal END),2) AS avg_away_goals
+FROM match
+GROUP BY season;
+
+-- PERCENTAGE with AVG
+-- What percentage of Liverpool's games did they win in each season?
+
+SELECT season,
+	AVG(CASE WHEN hometeam_id = 8455 AND home_goal > away_goal THEN 1
+		WHEN hometeam_id = 8455 AND home_goal < away_goal THEN 0
+		END) AS pct_homewins,
+	AVG(CASE WHEN awayteam_id = 8455 AND away_goal > home_goal THEN 1
+		WHEN awayteam_id = 8455 AND away_goal < home_goal THEN 0
+		END) AS pct_awaywins
+FROM match
+GROUP BY season;
+
+-- EXERCISES
+
+-- COUNT using CASE WHEN
+
+SELECT 
+	c.name AS country,
+    -- Count games from the 2012/2013 season
+	COUNT(CASE WHEN m.season = '2012/2013' 
+          	   THEN m.id ELSE NULL END) AS matches_2012_2013
+FROM country AS c
+LEFT JOIN match AS m
+ON c.id = m.country_id
+-- Group by country name alias
+GROUP BY country;
+
+SELECT 
+	c.name AS country,
+    -- Count matches in each of the 3 seasons
+	COUNT(CASE WHEN m.season = '2012/2013' THEN m.id END) AS matches_2012_2013,
+	COUNT(CASE WHEN m.season = '2013/2014' THEN m.id END) AS matches_2013_2014,
+	COUNT(CASE WHEN m.season = '2014/2015' THEN m.id END) AS matches_2014_2015
+FROM country AS c
+LEFT JOIN match AS m
+ON c.id = m.country_id
+-- Group by country name alias
+GROUP BY country;
+
+-- COUNT and CASE WHEN with multiple conditions
+
+SELECT 
+	c.name AS country,
+    -- Sum the total records in each season where the home team won
+	SUM(CASE WHEN m.season = '2012/2013' AND m.home_goal > m.away_goal 
+        THEN 1 ELSE 0 END) AS matches_2012_2013,
+ 	SUM(CASE WHEN m.season = '2013/2014' AND m.home_goal > m.away_goal 
+         THEN 1 ELSE 0 END) AS matches_2013_2014,
+	SUM(CASE WHEN m.season = '2014/2015' AND m.home_goal > m.away_goal      
+        THEN 1 ELSE 0 END) AS matches_2014_2015
+FROM country AS c
+LEFT JOIN match AS m
+ON c.id = m.country_id
+-- Group by country name alias
+GROUP BY country;
+
+-- Calculating percent with CASE and AVG
+
+SELECT 
+    c.name AS country,
+    -- Count the home wins, away wins, and ties in each country
+	COUNT(CASE WHEN m.home_goal > m.away_goal THEN m.id 
+        END) AS home_wins,
+	COUNT(CASE WHEN m.home_goal < m.away_goal THEN m.id 
+        END) AS away_wins,
+	COUNT(CASE WHEN m.home_goal = m.away_goal THEN m.id 
+        END) AS ties
+FROM country AS c
+LEFT JOIN matches AS m
+ON c.id = m.country_id
+GROUP BY country;
+
+
+SELECT 
+	c.name AS country,
+    -- Calculate the percentage of tied games in each season
+	AVG(CASE WHEN m.season='2013/2014' AND m.home_goal = m.away_goal THEN 1
+			WHEN m.season='2013/2014' AND m.home_goal != m.away_goal THEN 0
+			END) AS ties_2013_2014,
+	AVG(CASE WHEN m.season='2014/2015' AND m.home_goal = m.away_goal THEN 1
+			WHEN m.season='2014/2015' AND m.home_goal != m.away_goal THEN 0
+			END) AS ties_2014_2015
+FROM country AS c
+LEFT JOIN matches AS m
+ON c.id = m.country_id
+GROUP BY country;
+
+SELECT 
+	c.name AS country,
+    -- Round the percentage of tied games to 2 decimal points
+	ROUND(AVG(CASE WHEN m.season='2013/2014' AND m.home_goal = m.away_goal THEN 1
+			 WHEN m.season='2013/2014' AND m.home_goal != m.away_goal THEN 0
+			 END),2) AS pct_ties_2013_2014,
+	ROUND(AVG(CASE WHEN m.season='2014/2015' AND m.home_goal = m.away_goal THEN 1
+			 WHEN m.season='2014/2015' AND m.home_goal != m.away_goal THEN 0
+			 END),2) AS pct_ties_2014_2015
+FROM country AS c
+LEFT JOIN matches AS m
+ON c.id = m.country_id
+GROUP BY country;
+
